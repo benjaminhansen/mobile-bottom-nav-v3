@@ -16,7 +16,7 @@ class MobileBottomNav implements Plugin
 
     protected bool $moreButtonEnabled = true;
 
-    protected string $moreButtonLabel = 'More';
+    protected string $moreButtonLabel = 'mobile-bottom-nav::mobile-bottom-nav.more';
 
     protected string $renderHook = PanelsRenderHook::BODY_END;
 
@@ -24,16 +24,24 @@ class MobileBottomNav implements Plugin
 
     public static function make(): static
     {
-        return new static;
+        return app(static::class);
+    }
+
+    public static function get(): static
+    {
+        /** @var static $plugin */
+        $plugin = filament(app(static::class)->getId());
+
+        return $plugin;
     }
 
     public function getId(): string
     {
-        return 'hammadzafar05/mobile-bottom-nav';
+        return 'mobile-bottom-nav';
     }
 
     /**
-     * @param  array<BottomNavigationItem>  $items
+     * @param  array<MobileBottomNavItem>  $items
      */
     public function items(array $items): static
     {
@@ -94,11 +102,11 @@ class MobileBottomNav implements Plugin
 
         $items = $this->resolveItems();
 
-        if (empty($items)) {
+        if ($items === []) {
             return '';
         }
 
-        return view('filament-bottom-navigation::bottom-navigation', [
+        return view('mobile-bottom-nav::bottom-navigation', [
             'items' => $items,
             'moreButtonEnabled' => $this->moreButtonEnabled,
             'moreButtonLabel' => __($this->moreButtonLabel),
@@ -106,14 +114,14 @@ class MobileBottomNav implements Plugin
     }
 
     /**
-     * @return array<BottomNavigationItem>
+     * @return array<MobileBottomNavItem>
      */
     protected function resolveItems(): array
     {
         if (! $this->useNavigationExtraction && $this->items !== null) {
             return array_values(array_filter(
                 $this->items,
-                fn (BottomNavigationItem $item): bool => $item->isVisible(),
+                fn (MobileBottomNavItem $item): bool => $item->isVisible(),
             ));
         }
 
@@ -121,7 +129,7 @@ class MobileBottomNav implements Plugin
     }
 
     /**
-     * @return array<BottomNavigationItem>
+     * @return array<MobileBottomNavItem>
      */
     protected function extractFromNavigation(): array
     {
@@ -144,7 +152,7 @@ class MobileBottomNav implements Plugin
                     continue;
                 }
 
-                $bottomItem = BottomNavigationItem::make($navItem->getLabel())
+                $bottomItem = MobileBottomNavItem::make($navItem->getLabel())
                     ->icon($icon)
                     ->url($navItem->getUrl() ?? '#')
                     ->sort($navItem->getSort())
@@ -164,7 +172,7 @@ class MobileBottomNav implements Plugin
             }
         }
 
-        usort($allItems, fn (BottomNavigationItem $a, BottomNavigationItem $b): int => $a->getSort() <=> $b->getSort());
+        usort($allItems, fn (MobileBottomNavItem $a, MobileBottomNavItem $b): int => $a->getSort() <=> $b->getSort());
 
         $limit = $this->moreButtonEnabled
             ? $this->navigationLimit - 1

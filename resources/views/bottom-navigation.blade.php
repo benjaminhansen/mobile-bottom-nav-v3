@@ -82,7 +82,6 @@
         min-width: 1rem;
         height: 1rem;
         border-radius: 9999px;
-        background-color: var(--primary-500);
         color: #fff;
         font-size: 0.625rem;
         font-weight: 600;
@@ -100,7 +99,6 @@
         width: 0.5rem;
         height: 0.5rem;
         border-radius: 9999px;
-        background-color: var(--primary-500);
     }
 
     @media (min-width: 1024px) {
@@ -134,21 +132,23 @@
             $isActive = $item->isActiveState();
             $icon = $isActive && $item->getActiveIcon() ? $item->getActiveIcon() : $item->getIcon();
             $badge = $item->getBadge();
+            $badgeColor = $item->getBadgeColor() ?? 'primary';
+            $badgeCssColor = is_string($badgeColor) ? "var(--{$badgeColor}-500)" : 'var(--primary-500)';
         @endphp
 
         <a
             {{ generate_href_html($item->getUrl()) }}
             @class(['fi-bottom-nav-item', 'fi-active' => $isActive])
-            aria-current="{{ $isActive ? 'page' : 'false' }}"
+            @if ($isActive) aria-current="page" @endif
         >
             <span class="fi-bottom-nav-icon-wrapper">
                 {{ generate_icon_html($icon, size: IconSize::Large) }}
 
                 @if ($badge !== null && $badge !== '')
                     @if (is_numeric($badge))
-                        <span class="fi-bottom-nav-badge">{{ $badge }}</span>
+                        <span class="fi-bottom-nav-badge" style="background-color: {{ $badgeCssColor }}">{{ $badge }}</span>
                     @else
-                        <span class="fi-bottom-nav-badge-dot"></span>
+                        <span class="fi-bottom-nav-badge-dot" style="background-color: {{ $badgeCssColor }}"></span>
                     @endif
                 @endif
             </span>
