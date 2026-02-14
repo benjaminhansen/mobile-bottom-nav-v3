@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Hammadzafar05\MobileBottomNav\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class MobileBottomNavCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'mobile-bottom-nav';
 
     public $description = 'My command';
 
