@@ -4,36 +4,29 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/hammadzafar05/mobile-bottom-nav/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/hammadzafar05/mobile-bottom-nav/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/hammadzafar05/mobile-bottom-nav.svg?style=flat-square)](https://packagist.org/packages/hammadzafar05/mobile-bottom-nav)
 
-A thumb-friendly mobile bottom navigation bar for Filament v5 panels. Automatically extracts items from the Filament navigation registry and renders a fixed bottom bar on mobile viewports with full support for dark mode, safe-area insets, badges, and Alpine.js sidebar integration.
+A thumb-friendly mobile bottom navigation bar for Filament panels. Automatically extracts items from your Filament navigation and renders a fixed bottom bar on mobile viewports — with full support for dark mode, safe-area insets, badges, and sidebar integration.
+
+**Supports Filament v4 and v5.**
+
+## Screenshots
+
+#### Light Mode
+![Light Mode](art/screenshot-light.png)
+
+#### Dark Mode
+![Dark Mode](art/screenshot-dark.png)
 
 ## Installation
-
-Install the package via Composer:
 
 ```bash
 composer require hammadzafar05/mobile-bottom-nav
 ```
 
-> [!IMPORTANT]
-> If you have not set up a custom theme and are using Filament Panels, follow the instructions in the [Filament Docs](https://filamentphp.com/docs/5.x/styling/overview#creating-a-custom-theme) first.
-
-After setting up a custom theme, add the plugin's views to your theme CSS file:
-
-```css
-@source '../../../../vendor/hammadzafar05/mobile-bottom-nav/resources/**/*.blade.php';
-```
-
-Optionally, you can publish the views:
-
-```bash
-php artisan vendor:publish --tag="mobile-bottom-nav-views"
-```
+That's it. No custom theme or additional CSS configuration is required.
 
 ## Usage
 
-### Basic Setup
-
-Register the plugin on your Filament panel. By default, it extracts the top navigation items automatically:
+Register the plugin in your panel provider:
 
 ```php
 use Hammadzafar05\MobileBottomNav\MobileBottomNav;
@@ -47,9 +40,32 @@ public function panel(Panel $panel): Panel
 }
 ```
 
+The plugin automatically extracts your top navigation items and displays them in a bottom bar on mobile screens. On desktop, it stays hidden.
+
+## Configuration
+
+All configuration is optional and done via a fluent API.
+
+### Navigation Limit & More Button
+
+By default, the plugin shows 2 navigation items + a "More" button that opens the sidebar. You can adjust the total number of slots:
+
+```php
+MobileBottomNav::make()
+    ->fromNavigation(5)     // 4 nav items + 1 More button
+```
+
+To disable the "More" button entirely:
+
+```php
+MobileBottomNav::make()
+    ->fromNavigation(4)     // 4 nav items, no More button
+    ->moreButton(false)
+```
+
 ### Custom Items
 
-Provide your own navigation items instead of extracting from the registry:
+Provide your own items instead of extracting from the navigation registry:
 
 ```php
 use Hammadzafar05\MobileBottomNav\MobileBottomNav;
@@ -72,37 +88,7 @@ MobileBottomNav::make()
     ])
 ```
 
-### Configuration Options
-
-All configuration is done via the fluent API:
-
-| Method | Default | Description |
-|--------|---------|-------------|
-| `fromNavigation(int $limit)` | `3` | Extract items from Filament's navigation registry with a limit |
-| `items(array $items)` | `null` | Provide custom `MobileBottomNavItem` instances (disables auto-extraction) |
-| `moreButton(bool $enabled)` | `true` | Show/hide the "More" button that opens the sidebar |
-| `moreButtonLabel(string $label)` | `'More'` (translatable) | Customize the "More" button label |
-| `renderHook(string $hook)` | `PanelsRenderHook::BODY_END` | Change which Filament render hook is used |
-
-### Navigation Limit & More Button
-
-When using automatic extraction with the "More" button enabled (default), the plugin reserves one slot for the "More" button. So `fromNavigation(4)` shows 3 navigation items + 1 "More" button.
-
-```php
-MobileBottomNav::make()
-    ->fromNavigation(5)     // 4 nav items + More button
-    ->moreButton(true)      // opens the sidebar on tap
-```
-
-To disable the "More" button and use all slots for navigation:
-
-```php
-MobileBottomNav::make()
-    ->fromNavigation(4)     // 4 nav items, no More button
-    ->moreButton(false)
-```
-
-### Visibility
+### Conditional Visibility
 
 Items support conditional visibility:
 
@@ -111,6 +97,24 @@ MobileBottomNavItem::make('Admin')
     ->icon('heroicon-o-shield-check')
     ->url('/admin/settings')
     ->visible(fn () => auth()->user()?->isAdmin())
+```
+
+### All Options
+
+| Method | Default | Description |
+|--------|---------|-------------|
+| `fromNavigation(int $limit)` | `3` | Total number of bottom bar slots (includes the "More" button if enabled) |
+| `items(array $items)` | `null` | Provide custom `MobileBottomNavItem` instances (disables auto-extraction) |
+| `moreButton(bool $enabled)` | `true` | Show/hide the "More" button that opens the sidebar |
+| `moreButtonLabel(string $label)` | `'More'` (translatable) | Customize the "More" button label |
+| `renderHook(string $hook)` | `PanelsRenderHook::BODY_END` | Change which Filament render hook is used |
+
+### Publishing Views
+
+If you need to customize the Blade template:
+
+```bash
+php artisan vendor:publish --tag="mobile-bottom-nav-views"
 ```
 
 ## Testing
