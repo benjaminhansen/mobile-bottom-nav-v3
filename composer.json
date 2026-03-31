@@ -1,5 +1,5 @@
 {
-    "name": "hammadzafar05/mobile-bottom-nav",
+    "name": "benjaminhansen/mobile-bottom-nav-v3",
     "description": "A thumb-friendly mobile bottom navigation bar for Filament panels. It programmatically integrates with the Filament navigation registry to provide a seamless, ergonomic mobile experience with full support for dark mode and safe-area insets.",
     "keywords": [
         "hammadzafar05",
