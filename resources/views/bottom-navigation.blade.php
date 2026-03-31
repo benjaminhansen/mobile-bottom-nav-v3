@@ -1,7 +1,5 @@
 @php
     use function Filament\Support\generate_href_html;
-    use function Filament\Support\generate_icon_html;
-    use Filament\Support\Enums\IconSize;
 @endphp
 
 <style data-navigate-track>
@@ -142,7 +140,10 @@
             @if ($isActive) aria-current="page" @endif
         >
             <span class="fi-bottom-nav-icon-wrapper">
-                {{ generate_icon_html($icon, size: IconSize::Large) }}
+                <x-filament::icon
+                    icon="{{ $icon }}"
+                    size="lg"
+                />
 
                 @if ($badge !== null && $badge !== '')
                     @if (is_numeric($badge))
