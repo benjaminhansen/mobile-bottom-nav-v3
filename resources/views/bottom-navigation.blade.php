@@ -166,7 +166,10 @@
             aria-label="{{ $moreButtonLabel }}"
         >
             <span class="fi-bottom-nav-icon-wrapper">
-                {{ generate_icon_html('heroicon-o-bars-3', size: IconSize::Large) }}
+                <x-filament::icon
+                    icon="heroicon-o-bars-3"
+                    size="lg"
+                />
             </span>
 
             <span class="fi-bottom-nav-label">{{ $moreButtonLabel }}</span>
